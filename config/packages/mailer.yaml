@@ -1,0 +1,4 @@
+# config/packages/mailer.yaml
+framework:
+    mailer:
+        dsn: 'gmail://dhiainfo1@gmail.com:fcvmptuyuppfqcka@default?verify_peer=0'

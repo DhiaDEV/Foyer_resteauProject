@@ -1,0 +1,45 @@
+security:
+    providers:
+        app_user_provider:
+            entity:
+                class: App\Entity\User
+                property: email
+
+    password_hashers:
+        App\Entity\User:
+            algorithm: auto
+
+    firewalls:
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+
+        main:
+            lazy: true
+            provider: app_user_provider
+            access_denied_url: /access-denied
+            custom_authenticator: App\Security\UserAuthenticator
+            logout:
+                path: app_logout
+                target: app_front
+            # No access_control here anymore
+
+    # Move access_control here, outside of firewalls
+    access_control:
+        - { path: ^/demande, roles: ROLE_ADMIN }
+        - { path: ^/back2, roles: ROLE_ADMIN }
+       
+        - { path: ^/categorieplat, roles: ROLE_ADMIN }
+        - { path: ^/app_chamber, roles: ROLE_ADMIN }
+        - { path: ^/equipement, roles: ROLE_ADMIN }
+        - { path: ^/statistiques, roles: ROLE_ADMIN }
+        - { path: ^/back, roles: ROLE_ADMIN }
+        - { path: ^/plat, roles: ROLE_ADMIN }
+        - { path: ^/service, roles: ROLE_ADMIN }
+       
+        - { path: ^/dashreclamation , roles: ROLE_ADMIN }
+        
+
+        
+
+

@@ -1,0 +1,600 @@
+{% extends 'fronttemplates/basefront.html.twig' %}
+
+   
+{% block body %}
+    <section class="py-5">
+    <div class="container-fluid">
+            <div class="row py-3">
+                <div class="d-flex  justify-content-center justify-content-sm-between align-items-center">
+                    <nav class="main-menu d-flex navbar navbar-expand-lg">
+
+                        <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar"
+                                aria-controls="offcanvasNavbar">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+
+                        <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
+
+                            <div class="offcanvas-header justify-content-center">
+                                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                            </div>
+
+                            <div class="offcanvas-body">
+
+                                
+
+                                <ul class="navbar-nav justify-content-end menu-list list-unstyled d-flex gap-md-3 mb-0">
+                                    <li class="nav-item">
+                                        <a href="{{ path('app_ajouterReclamation') }}" class="nav-link">Ajouter une réclamation</a>
+                                    </li>
+                                    <li class="nav-item active">
+                                        <a href="{{ path('app_afficherReclamations') }}" class="nav-link">Mes Réclamations</a>
+                                    </li>
+                                    <li class="nav-item dropdown">
+                                        <a href="{{ path('app_frontafficherReclamationsrepondues') }}" class="nav-link"> Réclamations répondues</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="#sale" class="nav-link"></a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="#blog" class="nav-link"></a>
+                                    </li>
+                                </ul>
+
+                                    <!-- <li class="nav-item dropdown">
+                                        <a class="nav-link dropdown-toggle" role="button" id="pages" data-bs-toggle="dropdown" aria-expanded="false">Pages</a>
+                                        <ul class="dropdown-menu" aria-labelledby="pages">
+                                            <li><a href="{{ path('app_front') }}" class="dropdown-item">About Us </a></li>
+                                            <li><a href="{{ path('app_front') }}" class="dropdown-item">Shop </a></li>
+                                            <li><a href="{{ path('app_front') }}" class="dropdown-item">Single Product </a></li>
+                                            <li><a href="{{ path('app_front') }}" class="dropdown-item">Cart </a></li>
+                                            <li><a href="{{ path('app_front') }}" class="dropdown-item">Checkout </a></li>
+                                            <li><a href="{{ path('app_front') }}" class="dropdown-item">Blog </a></li>
+                                            <li><a href="{{ path('app_front') }}" class="dropdown-item">Single Post </a></li>
+                                            <li><a href="{{ path('app_front') }}" class="dropdown-item">Styles </a></li>
+                                            <li><a href="{{ path('app_front') }}" class="dropdown-item">Contact </a></li>
+                                            <li><a href="{{ path('app_front') }}" class="dropdown-item">Thank You </a></li>
+                                            <li><a href="{{ path('app_front') }}" class="dropdown-item">My Account </a></li>
+                                            <li><a href="{{ path('app_front') }}" class="dropdown-item">404 Error </a></li>
+                                        </ul>
+                                    </li> -->
+
+
+
+                            </div>
+
+                        </div>
+                    </nav>
+                </div>
+            </div>
+        </div>
+        <div class="container-fluid">
+            <div class="bg-secondary py-5 my-5 rounded-5" >
+                <div class="container my-5">
+                    <div class="row">
+
+
+
+                        <div class="col-md-12">
+                            <h2 class="text-black">Vos priorités en réclamation</h2>
+
+                            <!-- Ajout du CSS personnalisé directement dans le fichier Twig -->
+                            <style>
+
+
+                                .email-container {
+                                    display: flex;
+                                    align-items: center; /
+                                justify-content: flex-end;
+                                    margin-top: 10px;
+                                }
+
+                                .email-container i {
+                                    margin-right: 5px;
+                                }
+
+                                .email-container p {
+                                    margin: 0;
+                                    font-size: 14px;
+                                    color: #6c757d;
+                                }
+
+
+
+                                /* Import Google font - Poppins
+                                @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap");
+                                /* Style pour les étoiles grises (vides)
+                                */
+
+                                .text-muted {
+                                    color: #d3d3d3;
+                                }
+
+
+                                .stars i.bi-star-fill {
+                                    color: #ffcc00;}
+
+                                .stars {
+                                    display: flex;
+                                    align-items: center;
+                                    gap: 5px;
+                                }
+                                .stars i {
+                                    color: #e6e6e6;
+                                    font-size: 20px;
+                                    cursor: pointer;
+                                    transition: color 0.2s ease;
+                                }
+                                .stars i.active {
+                                    color: #ff9c1a;
+                                }
+
+
+                                .card-spacing {
+                                    margin-bottom: 20px;
+                                }
+
+                                /* Design des cartes */
+                                .custom-card {
+                                    border: 1px solid #ddd; /* Ajout d'une bordure fine */
+                                    border-radius: 10px; /* Coins arrondis */
+                                    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Ombre douce */
+                                    overflow: hidden; /* Évite le débordement des éléments */
+                                    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Animation au survol */
+                                }
+
+                                .custom-card:hover {
+                                    transform: scale(1.02); /* Zoom léger au survol */
+                                    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15); /* Augmente l'ombre au survol */
+                                }
+
+                                /* Design de l'entête des cartes */
+                                .card-header {
+                                    background-color: #f8f9fa; /* Couleur de fond claire */
+                                    border-bottom: 1px solid #e5e5e5; /* Ligne séparatrice en bas */
+                                    padding: 15px; /* Espacement interne */
+                                    font-weight: bold;
+                                }
+
+                                /* Couleur des icônes et texte */
+                                .reclamation-type {
+                                    font-size: 14px;
+                                    color: #495057; /* Gris foncé */
+                                    display: flex;
+                                    align-items: center;
+                                }
+
+                                .reclamation-type i {
+                                    margin-right: 5px;
+                                    font-size: 16px; /* Taille légèrement plus grande pour l'icône */
+                                }
+
+                                .reponse-header {
+                                    font-weight: bold;
+                                    color: #343a40; /* Noir/gris */
+                                }
+
+                                /* Style des réponses et texte général */
+                                .reponse-text {
+                                    font-size: 14px;
+                                    line-height: 1.5;
+                                    color: #6c757d; /* Gris moyen */
+                                }
+
+                                .no-reponse {
+                                    font-style: italic;
+                                    color: #adb5bd; /* Gris clair */
+                                }
+
+
+
+                                /* Table personnalisée avec fond blanc, ombres et coins arrondis */
+                                .table-custom {
+                                    background-color: #ffffff; /* Fond blanc */
+                                    color: #343a40; /* Texte sombre */
+                                    border-radius: 12px; /* Coins arrondis */
+                                    box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.1); /* Ombre douce et large derrière la carte */
+                                    overflow: hidden; /* Assurez-vous que les coins arrondis sont visibles */
+                                    margin-top: 30px; /* Espacement supérieur */
+                                    transition: transform 0.3s ease; /* Transition pour l'effet de survol */
+                                }
+
+                                /* Effet de survol pour la table */
+                                .table-custom:hover {
+                                    transform: translateY(-5px); /* Légère élévation */
+                                    box-shadow: 0px 12px 30px rgba(0, 0, 0, 0.15); /* Ombre plus marquée lors du survol */
+                                }
+
+                                /* Lignes du tableau avec espacement et bordure subtile */
+                                .table-custom th, .table-custom td {
+                                    padding: 15px 20px; /* Espacement généreux */
+                                    border-bottom: 1px solid #e0e0e0; /* Bordure discrète */
+                                }
+
+                                /* En-tête de la table avec fond plus sombre */
+                                .table-custom thead {
+                                    background-color: #f7f7f7; /* Gris très clair */
+                                    color: #495057; /* Texte sombre */
+                                    font-weight: bold; /* Texte en gras */
+                                }
+
+                                /* Lignes du tableau avec survol stylisé */
+                                .table-custom tbody tr:hover {
+                                    background-color: #f1f3f5; /* Gris clair au survol */
+                                    cursor: pointer; /* Curseur pointer */
+                                    transform: scale(1.02); /* Légère augmentation de la taille */
+                                    transition: transform 0.2s ease; /* Animation fluide */
+                                }
+
+                                /* Boutons avec effet moderne de survol */
+                                .add-btn {
+                                    margin-top: 20px;
+                                    background-color: #28a745; /* Vert */
+                                    color: white;
+                                    border: none;
+                                    padding: 12px 18px;
+                                    border-radius: 8px;
+                                    text-decoration: none;
+                                    transition: background-color 0.3s ease, transform 0.2s ease;
+                                    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Ombre douce */
+                                }
+
+                                .add-btn:hover {
+                                    background-color: #218838; /* Vert plus foncé */
+                                    transform: translateY(-4px); /* Légère élévation */
+                                    box-shadow: 0px 6px 8px rgba(0, 0, 0, 0.2); /* Ombre plus marquée */
+                                }
+
+                                /* Icônes d'action avec effet moderne */
+                                .btn-sm {
+                                    display: inline-flex;
+                                    align-items: center;
+                                    justify-content: center;
+                                    padding: 10px 14px;
+                                    border-radius: 6px;
+                                    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1); /* Légère ombre */
+                                    transition: transform 0.2s ease; /* Transition fluide pour l'élévation */
+                                }
+
+                                .btn-info {
+                                    background-color: #17a2b8; /* Cyan */
+                                    border: none;
+                                }
+
+                                .btn-danger {
+                                    background-color: #dc3545; /* Rouge */
+                                    border: none;
+                                }
+
+                                /* Effet de survol pour les boutons d'action */
+                                .btn-sm:hover {
+                                    transform: translateY(-3px); /* Élément qui s'élève légèrement au survol */
+                                }
+
+                                /* Effets de modal avec ombre et coins arrondis */
+                                .modal-content {
+                                    border-radius: 12px; /* Coins arrondis */
+                                    box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.1); /* Ombre douce mais plus marquée */
+                                }
+
+                                /* Design des boutons d'action dans le modal */
+                                .modal-footer .btn {
+                                    border-radius: 8px; /* Coins arrondis */
+                                    transition: background-color 0.3s ease;
+                                }
+
+                                .modal-footer .btn:hover {
+                                    background-color: #e2e6ea; /* Légère teinte au survol */
+                                }
+                            </style>
+
+
+                            <!-- Table des réclamations -->
+                            <table class="table table-striped table-bordered table-custom text-dark">
+                                <thead>
+                                <tr>
+                                    <th>Titre de la Réclamation</th>
+                                    <th>Type de la réclamation</th>
+                                    <th>Description</th>
+                                    <th>Date de Réclamation</th>
+                                    <th>État</th>
+                                    <th>Réponse</th>
+                                    <th>Actions</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for reclamation in pagination.items %}
+                                    <tr>
+                                        <td>{{ reclamation.titre }}</td>
+                                        <td>
+                                            {% if reclamation.TypeReclamations is not null %}
+                                                {{ reclamation.TypeReclamations.NomTypeReclamation }}
+                                            {% else %}
+                                                No Type Available
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% set descriptionWords = reclamation.description|split(' ') %}
+                                            {% if descriptionWords|length > 3 %}
+                                                {{ descriptionWords|slice(0, 3)|join(' ') }}...
+                                            {% else %}
+                                                {{ reclamation.description }}
+                                            {% endif %}
+                                        </td>
+                                        <td>{{ reclamation.dateReclamation|date('d/m/Y') }}</td>
+                                        <td>{{ reclamation.etat }}</td>
+                                        <td>
+                                            {% if reclamation.reponse %}
+                                                {% set reponseWords = reclamation.reponse|split(' ') %}
+                                                {% if reponseWords|length > 3 %}
+                                                    {{ reponseWords|slice(0, 3)|join(' ') }}...
+                                                {% else %}
+                                                    {{ reclamation.reponse }}
+                                                {% endif %}
+                                            {% else %}
+                                                -
+                                            {% endif %}
+                                        </td><!-- Affiche un tiret si la réponse est vide -->
+                                        <td>
+                                            <!-- Icônes d'action -->
+                                            <a href="#" class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#modalDetails{{ reclamation.id }}" title="Voir">
+                                                <i class="bi bi-eye"></i>
+                                            </a>
+
+                                            {% if reclamation.reponse is empty %}
+                                                <a href="{{ path('app_modifierReclamation', { id: reclamation.id }) }}" class="btn btn-danger btn-sm" title="modifier" >
+                                                    <i class="bi bi-pencil"></i>
+                                                </a>
+                                            {% endif %}
+
+                                            <a href="{{ path('app_supprimerReclamation', { id: reclamation.id }) }}" class="btn btn-danger btn-sm" title="Supprimer" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette réclamation ?')">
+                                                <i class="bi bi-trash"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+
+                                    <!-- Modal pour afficher les détails de la réclamation -->
+                                    <div class="modal fade" id="modalDetails{{ reclamation.id }}" tabindex="-1" aria-labelledby="modalDetailsLabel{{ reclamation.id }}" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="modalDetailsLabel{{ reclamation.id }}">Détails de la réclamation</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <p><strong>Titre :</strong> {{ reclamation.titre }}</p>
+                                                    <p><strong>Description :</strong> {{ reclamation.description }}</p>
+                                                    <p><strong>Date de Réclamation :</strong> {{ reclamation.dateReclamation|date('d/m/Y') }}</p>
+                                                    <p><strong>État :</strong> {{ reclamation.etat }}</p>
+                                                    <p><strong>Réponse :</strong> {{ reclamation.reponse ?: '-' }}</p>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                {% endfor %}
+                                </tbody>
+                            </table>
+
+                            {# Rendu de la pagination #}
+                            <div class="pagination">
+                                {{ knp_pagination_render(pagination) }}
+                            </div>
+
+                            <div class="text-end mb-3">
+                                <!-- Bouton pour ouvrir le modal d'ajout -->
+                                <button type="button" class="btn btn-success" >
+                                    <a href="{{ path('app_ajouterReclamation') }}" class="btn btn-success">
+                                        Ajouter une Réclamation
+                                    </a>
+                                </button>
+                            </div>
+
+
+
+                            <!-- Section pour afficher les réclamations sous forme de cartes -->
+                            <section>
+                                <h2 class="text-black">Voir plus en détail</h2>
+
+                                <!-- Section pour afficher les réclamations sous forme de cartes -->
+                                <div class="row">
+                                    {% for reclamation in pagination.items %}
+                                        <div class="col-md-12 card-spacing">
+                                            <div class="card custom-card">
+                                                <div class="card-header d-flex justify-content-between align-items-center">
+                                                    <div>
+                                                        <span class="reponse-header">{{ reclamation.titre }}</span>
+                                                        <br />
+                                                        <span>{{ reclamation.dateReclamation|date('d/m/Y') }}</span>
+                                                    </div>
+                                                    <div>
+              <span class="reclamation-type">
+                {% if reclamation.TypeReclamations is not null %}
+                    <i
+                            class="{% if reclamation.TypeReclamations.NomTypeReclamation == 'urgente' %}bi bi-exclamation-circle-fill{% elseif reclamation.TypeReclamations.NomTypeReclamation == 'normale' %}bi bi-circle{% elseif reclamation.TypeReclamations.NomTypeReclamation == 'très urgente' %}bi bi-bell-fill{% else %}bi bi-question-circle{% endif %}"
+                            title="{{ reclamation.TypeReclamations.NomTypeReclamation | default('Type inconnu') }}"
+                    ></i>
+                  {{ reclamation.TypeReclamations.NomTypeReclamation }}
+                {% else %}
+                    <i class="bi bi-question-circle"></i> No type
+                {% endif %}
+              </span>
+                                                        <a href="{{ path('app_ajouter_favorii', { 'id': reclamation.id }) }}"
+                                                           class="btn {% if reclamation.favori %}btn-success{% else %}btn-warning{% endif %}">
+                                                            <i class="{% if reclamation.favori %}bi bi-star-fill{% else %}bi bi-star{% endif %}"></i>
+                                                            {% if reclamation.favori %} Supprimer des favoris {% else %} Ajouter aux favoris {% endif %}
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                                <div class="card-body">
+                                                    <div class="reponse-header">Vous : {{ reclamation.description }}</div>
+                                                    {% if reclamation.image %}
+                                                        <div class="mt-3">
+                                                            <span class="fw-bold">Pièce jointe :</span>
+                                                            <div class="reponse-container">
+                                                                <a href="{{ asset('uploads/reclamations/' ~ reclamation.image) }}" target="_blank">
+                                                                    <img
+                                                                            src="{{ asset('uploads/reclamations/' ~ reclamation.image) }}"
+                                                                            alt="Pièce jointe"
+                                                                            class="img-fluid"
+                                                                            style="max-width: 200px; max-height: 200px; margin-top: 10px;"
+                                                                    />
+                                                                </a>
+                                                            </div>
+                                                        </div>
+                                                    {% endif %}
+                                                    <hr />
+                                                    <div class="d-flex justify-content-between align-items-center">
+                                                        <header class="reponse-header">Réponse d'admin</header>
+                                                        <div class="reponse-container">
+                                                            {% if reclamation.reponse %}
+                                                                <!-- Réponse de l'admin -->
+                                                                <div class="reponse-text">
+                                                                    <p>{{ reclamation.reponse }}</p>
+                                                                </div>
+                                                                <br/> <!-- Retour à la ligne après la réponse -->
+
+                                                                      <!-- Évaluation avec étoiles -->
+                                                                <div class="stars" id="stars-{{ reclamation.id }}">
+                                                                    {% for i in 1..5 %}
+                                                                        <i class="bi bi-star{% if i <= reclamation.rating and reclamation.rating > 0 %}-fill{% else %} text-muted{% if reclamation.rating == 0 %} clickable{% endif %}{% endif %}"
+                                                                           data-reclamation-id="{{ reclamation.id }}"
+                                                                           data-rating="{{ i }}"
+                                                                           onclick="initializeRating(this, {{ reclamation.rating }}, {{ reclamation.id }})"></i>
+                                                                    {% endfor %}
+                                                                </div>
+                                                            {% else %}
+                                                                <!-- Si aucune réponse -->
+                                                                <div class="no-reponse">
+                                                                    <p>Pas de réponse</p>
+                                                                </div>
+                                                            {% endif %}
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div id="email-icon-container-{{ reclamation.id }}" class="email-container d-none text-end mt-3">
+
+                                            </div>
+
+                                            <div id="email-icon-container-{{ reclamation.id }}" class="email-container text-end mt-3">
+
+                                            </div>
+
+
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </section>
+
+
+
+
+                            <script>
+                                function sendEmail(reclamationId) {
+
+
+                                    // Création de la requête AJAX pour envoyer l'email
+                                    fetch("{{ path('send_mail') }}", {
+                                        method: "POST",
+                                        headers: {
+                                            "Content-Type": "application/json",
+                                        },
+                                        body: JSON.stringify({
+                                            reclamationID: reclamationId
+
+                                        })
+                                    })
+                                        .then(response => response.json())
+                                        .then(data => {
+                                            if (data.message) {
+                                                alert("Email envoyé avec succès !");
+                                            } else {
+                                                alert("Erreur lors de l'envoi de l'email !");
+                                            }
+                                        })
+                                        .catch(error => {
+                                            console.error('Error:', error);
+                                            alert("Erreur lors de l'envoi de l'email.");
+                                        });
+                                }
+
+                                function initializeRating(star, currentRating, reclamationId) {
+                                    // Vérifiez si la réclamation a un rating de 0, sinon retournez sans rien faire
+                                    if (currentRating !== 0) return;
+
+                                    // Sélectionner les étoiles de cette réclamation spécifique (en utilisant l'ID de la réclamation)
+                                    const stars = document.querySelectorAll(`#stars-${reclamationId} i`);
+
+                                    // Récupérer la nouvelle note en fonction de l'étoile cliquée
+                                    const newRating = parseInt(star.getAttribute("data-rating"));
+                                    const emailContainer = document.getElementById(`email-icon-container-${reclamationId}`);
+                                    if (newRating === 1) {
+                                        emailContainer.classList.remove("d-none"); // Afficher le conteneur
+                                    } else {
+                                        emailContainer.classList.add("d-none"); // Masquer le conteneur
+                                    }
+
+
+                                    // Mettre à jour les classes des étoiles en fonction de la nouvelle note
+                                    stars.forEach((star, index) => {
+                                        if (index < newRating) {
+                                            // Remplir les étoiles jusqu'à la nouvelle note
+                                            star.classList.add("bi-star-fill");  // Ajouter la classe "bi-star-fill" pour une étoile remplie
+                                            star.classList.remove("text-muted"); // Retirer la classe "text-muted" pour indiquer qu'elle n'est pas grise
+                                        } else {
+                                            // Vider les étoiles après la nouvelle note
+                                            star.classList.remove("bi-star-fill"); // Retirer la classe "bi-star-fill"
+                                            star.classList.add("text-muted");      // Ajouter la classe "text-muted" pour rendre l'étoile grise
+                                        }
+                                    });
+
+                                    // Envoyer la nouvelle note au serveur via une requête AJAX (Fetch)
+                                    fetch('/update-rating', {
+                                        method: 'POST',
+                                        headers: {
+                                            'Content-Type': 'application/json',
+                                        },
+                                        body: JSON.stringify({
+                                            reclamation_id: reclamationId,
+                                            rating: newRating
+                                        })
+                                    })
+                                        .then(response => response.json())
+                                        .then(data => {
+                                            if (data.success) {
+                                                console.log('Rating updated successfully:', data);
+                                            } else {
+                                                console.error('Error updating rating:', data.error);
+                                            }
+                                        })
+                                        .catch(error => {
+                                            console.error('Error:', error);
+                                        });
+                                }
+
+
+
+                            </script>
+
+
+                            <!-- Style personnalisé -->
+
+                            <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+                            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+                            <!-- Importation de Bootstrap Icons pour l'icône de priorité et étoiles -->
+
+                            <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

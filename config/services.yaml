@@ -1,0 +1,30 @@
+services:
+    App\EventListener\LoginSuccessListener:
+        tags:
+            - { name: kernel.event_listener, event: security.login_success, method: onLoginSuccess }
+            - { name: kernel.event_listener, event: kernel.exception }
+
+    App\Service\MailService:
+        arguments:
+            $dsn: '%env(MAILER_DSN)%'
+    # Configuration par défaut des services dans ce fichier
+    _defaults:
+        autowire: true      # Injection automatique des dépendances dans vos services
+        autoconfigure: true # Enregistre automatiquement vos services en tant que commandes, abonnés à des événements, etc.
+
+    # Permet d'utiliser les classes dans src/ comme services
+    App\:
+        resource: '../src/'
+        exclude:
+            - '../src/DependencyInjection/'
+            - '../src/Entity/'
+            - '../src/Kernel.php'
+
+    # Déclaration explicite de `EnumToStringTransformer` en tant que service
+    App\Form\DataTransformer\EnumToStringTransformer: ~
+
+parameters:
+
+    images_directory: '%kernel.project_dir%/public/uploads/images'
+    equipements_directory: '%kernel.project_dir%/public/uploads/equipements'
+    reclamations_directory: '%kernel.project_dir%/public/uploads/reclamations'

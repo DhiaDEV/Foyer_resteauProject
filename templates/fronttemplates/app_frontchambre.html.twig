@@ -1,0 +1,310 @@
+{% extends 'fronttemplates/basefront.html.twig' %}
+
+{% block body %}
+       <!-- Afficher les messages flash -->
+       {% for label, messages in app.flashes %}
+           <div class="alert alert-{{ label == 'success' ? 'success' : 'warning' }} alert-dismissible fade show" role="alert">
+               {% for message in messages %}
+                   {{ message }}
+               {% endfor %}
+               <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+           </div>
+       {% endfor %}
+    <div class="container mt-5">
+        <div class="d-flex justify-content-end mb-4">
+            <div class="row g-3">
+                <!-- Recherche par numéro de chambre -->
+                <div class="col-md-8">
+                    <form class="d-flex" method="get" action="{{ path('app_front_chambre') }}">
+                        <input type="text"
+                               name="numeroChB"
+                               class="form-control me-2"
+                               placeholder="Numéro de chambre"
+                               value="{{ searchTerms.numeroChB }}" />
+                        <button type="submit" class="btn btn-primary">Rechercher</button>
+                    </form>
+                </div>
+                <div class="col-md-4 text-end">
+                    <!-- Icône de réglage en place du bouton "Filtrer par critères" -->
+                    <button id="toggle-filters-btn" class="btn btn-secondary">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-sliders" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M11.5 2a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3M9.05 3a2.5 2.5 0 0 1 4.9 0H16v1h-2.05a2.5 2.5 0 0 1-4.9 0H0V3zM4.5 7a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3M2.05 8a2.5 2.5 0 0 1 4.9 0H16v1H6.95a2.5 2.5 0 0 1-4.9 0H0V8zm9.45 4a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3m-2.45 1a2.5 2.5 0 0 1 4.9 0H16v1h-2.05a2.5 2.5 0 0 1-4.9 0H0v-1z"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Critères supplémentaires (masqués par défaut) -->
+        <div id="advanced-filters" class="mt-4" style="display: none;">
+            <form method="get" action="{{ path('app_front_chambre') }}" class="d-flex flex-column align-items-center p-3 border rounded shadow-sm">
+                <div class="row g-2 w-100">
+                    <!-- Recherche par étage -->
+                    <div class="col-md-12">
+                        <label class="form-label">Étage</label>
+                        <div class="input-group">
+                            <input type="number"
+                                   name="etage_min"
+                                   class="form-control form-control-sm"
+                                   placeholder="Min"
+                                   min="1" max="10"
+                                   value="{{ searchTerms.etage_min }}" />
+                            <input type="number"
+                                   name="etage_max"
+                                   class="form-control form-control-sm"
+                                   placeholder="Max"
+                                   min="1" max="10"
+                                   value="{{ searchTerms.etage_max }}" />
+                        </div>
+                    </div>
+
+                    <!-- Recherche par capacité -->
+                    <div class="col-md-12">
+                        <label class="form-label">Capacité</label>
+                        <div class="input-group">
+                            <input type="number"
+                                   name="capacite_min"
+                                   class="form-control form-control-sm"
+                                   placeholder="Min"
+                                   min="1" max="5"
+                                   value="{{ searchTerms.capacite_min }}" />
+                            <input type="number"
+                                   name="capacite_max"
+                                   class="form-control form-control-sm"
+                                   placeholder="Max"
+                                   min="1" max="5"
+                                   value="{{ searchTerms.capacite_max }}" />
+                        </div>
+                    </div>
+
+                    <!-- Recherche par statut -->
+                    <div class="col-md-12">
+                        <label class="form-label">Statut</label>
+                        <select name="statutChB" class="form-select form-select-sm">
+                            <option value="">Tous</option>
+                            <option value="Disponible" {{ searchTerms.statutChB == 'Disponible' ? 'selected' : '' }}>Disponible</option>
+                            <option value="Occupé" {{ searchTerms.statutChB == 'Occupé' ? 'selected' : '' }}>Occupé</option>
+                            <option value="En maintenance" {{ searchTerms.statutChB == 'En maintenance' ? 'selected' : '' }}>En maintenance</option>
+                        </select>
+                    </div>
+
+                    <!-- Recherche par prix -->
+                    <div class="col-md-12">
+                        <label class="form-label">Prix</label>
+                        <div class="input-group">
+                            <input type="number"
+                                   name="prix_min"
+                                   class="form-control form-control-sm"
+                                   placeholder="Min"
+                                   step="0.01"
+                                   value="{{ searchTerms.prix_min }}" />
+                            <input type="number"
+                                   name="prix_max"
+                                   class="form-control form-control-sm"
+                                   placeholder="Max"
+                                   step="0.01"
+                                   value="{{ searchTerms.prix_max }}" />
+                        </div>
+                    </div>
+
+                    <!-- Boutons Rechercher et Fermer -->
+                    <div class="col-md-12 text-center mt-3 d-flex justify-content-center gap-2">
+                        <button type="submit" class="btn btn-primary btn-sm w-50">Rechercher</button>
+                        <button type="button" id="close-filters-btn" class="btn btn-danger btn-sm w-50">Fermer</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <section class="py-3" style="background-image: url('images/background-pattern.jpg');background-repeat: no-repeat;background-size: cover;">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="banner-blocks">
+                            <!-- Swiper des chambres -->
+                            <div class="banner-ad large bg-info block-1">
+                                <div class="swiper main-swiper">
+                                    <div class="swiper-wrapper">
+                                        {% if chambres is not empty %}
+                                            {% for chambre in chambres %}
+                                                <div class="swiper-slide">
+                                                    <div class="row banner-content p-5">
+                                                        <!-- Contenu de la chambre -->
+                                                        <div class="content-wrapper col-md-7">
+                                                            <h3 class="display-4">Chambre {{ chambre.numeroChB }}</h3>
+                                                            <p><strong>Étage :</strong> {{ chambre.etageChB }}</p>
+                                                            <p><strong>Prix :</strong> {{ chambre.prixChB }} €</p>
+
+                                                            <!-- Statut -->
+                                                            <div class="my-3">
+                                                                {% if chambre.statutChB == constant('App\\Enum\\ChambreStatut::DISPONIBLE') %}
+                                                                    <span class="badge bg-success">Disponible</span>
+                                                                {% elseif chambre.statutChB == constant('App\\Enum\\ChambreStatut::OCCUPEE') %}
+                                                                    <span class="badge bg-danger">Occupée</span>
+                                                                {% elseif chambre.statutChB == constant('App\\Enum\\ChambreStatut::EN_MAINTENANCE') %}
+                                                                    <span class="badge bg-secondary">En maintenance</span>
+                                                                {% else %}
+                                                                    <span class="badge bg-warning">Statut inconnu</span>
+                                                                {% endif %}
+                                                            </div>
+
+                                                            <!-- Bouton Réserver -->
+                                                            {% if chambre.statutChB == constant('App\\Enum\\ChambreStatut::DISPONIBLE') %}
+                                                                <a href="{{ path('app_reserver_chambre', {'id': chambre.id}) }}"
+                                                                   class="btn btn-outline-dark btn-lg text-uppercase fs-6 rounded-1 px-4 py-3 mt-3">
+                                                                    Réserver
+                                                                </a>
+                                                            {% endif %}
+                                                        </div>
+
+                                                        <!-- Image de la chambre -->
+                                                        <div class="img-wrapper col-md-5">
+                                                            {% if chambre.image %}
+                                                                <img src="{{ asset('uploads/images/' ~ chambre.image) }}"
+                                                                     alt="Image de la chambre {{ chambre.numeroChB }}"
+                                                                     class="img-fluid"
+                                                                     style="width: 100%; height: auto;">
+                                                            {% else %}
+                                                                <img src="{{ asset('images/default-room.jpg') }}"
+                                                                     alt="Image par défaut"
+                                                                     class="img-fluid"
+                                                                     style="width: 100%; height: auto;">
+                                                            {% endif %}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            {% endfor %}
+                                        {% else %}
+                                            <div class="swiper-slide">
+                                                <div class="row banner-content p-5">
+                                                    <div class="content-wrapper col-md-12 text-center">
+                                                        <p class="text-muted">Aucune chambre n'est disponible pour le moment.</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+
+                                    <!-- Pagination Swiper -->
+                                    <div class="swiper-pagination"></div>
+                                </div>
+                            </div>
+                            <!-- Fin du Swiper -->
+
+                            <!-- Block 2: Static Content -->
+                            <div class="banner-ad bg-success-subtle block-2" style="background: url('images/ad-image-1.png') no-repeat right bottom;">
+                                <div class="row banner-content p-5">
+                                    <div class="content-wrapper col-md-7">
+                                        <div class="categories sale mb-3 pb-3">20% off</div>
+                                        <h3 class="banner-title">Chambres à 2 &amp; 3</h3>
+                                        <a href="#" class="d-flex align-items-center nav-link">Shop Collection <svg width="24" height="24"><use xmlns:xlink:href="#arrow-right"></use></svg></a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Block 3: Static Content -->
+                            <div class="banner-ad bg-danger block-3" style="background:url('images/ad-image-2.png') no-repeat;background-position: right bottom">
+                                <div class="row banner-content p-5">
+                                    <div class="content-wrapper col-md-7">
+                                        <div class="categories sale mb-3 pb-3">15% off</div>
+                                        <h3 class="item-title">les chambres individuelles</h3>
+                                        <a href="#" class="d-flex align-items-center nav-link">Shop Collection <svg width="24" height="24"><use xmlns:xlink:href="#arrow-right"></use></svg></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section>
+
+        <h2 class="section-title text-center mb-4">Liste des Chambres</h2>
+
+        {% if chambres is not empty %}
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+                {% for chambre in chambres %}
+                    <div class="col">
+                        <div class="card h-100 border-0 shadow-lg rounded">
+                            <!-- Image de la chambre -->
+                            <div class="image-holder">
+                                <a href="{{ path('app_front_chambre', {'id': chambre.id}) }}">
+                                    <img src="{{ chambre.image ? asset('uploads/images/' ~ chambre.image) : asset('images/default-room.jpg') }}"
+                                         alt="Image de la chambre" class="card-img-top rounded-top">
+                                </a>
+                            </div>
+
+                            <!-- Contenu de la carte -->
+                            <div class="card-body d-flex flex-column justify-content-between">
+                                <h5 class="card-title text-center">Chambre {{ chambre.numeroChB }}</h5>
+                                <p class="text-center"><strong>Étage :</strong> {{ chambre.etageChB }}</p>
+                                <p class="text-center"><strong>Prix :</strong> {{ chambre.prixChB }} €</p>
+
+                                <!-- Statut -->
+                                <div class="d-flex justify-content-center">
+                                    <p class="text-center">
+                                        <strong>Statut :</strong>
+                                        {% if chambre.statutChB == constant('App\\Enum\\ChambreStatut::DISPONIBLE') %}
+                                            <span class="badge bg-success">Disponible</span>
+                                        {% elseif chambre.statutChB == constant('App\\Enum\\ChambreStatut::OCCUPEE') %}
+                                            <span class="badge" style="background-color: #f8d7da; color: #721c24;">Occupée</span>
+                                        {% elseif chambre.statutChB == constant('App\\Enum\\ChambreStatut::EN_MAINTENANCE') %}
+                                            <span class="badge" style="background-color: #d6d8d9; color: #383d41;">En maintenance</span>
+                                        {% else %}
+                                            <span class="badge bg-warning">Statut inconnu</span>
+                                        {% endif %}
+                                    </p>
+                                </div>
+
+                                <!-- Bouton Réserver avec condition sur le statut -->
+                                {% if chambre.statutChB == constant('App\\Enum\\ChambreStatut::DISPONIBLE') %}
+                                    <div class="text-center mt-3">
+                                        <a href="{{ path('app_reserver_chambre', {'id': chambre.id}) }}" class="btn btn-primary">
+                                            Réserver
+                                        </a>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="text-center">
+                <p class="text-muted">Aucune chambre n'est disponible pour le moment.</p>
+            </div>
+        {% endif %}
+    </section>
+    </div>
+    <script>
+        // Script pour basculer l'affichage des critères avancés
+        document.getElementById('toggle-filters-btn').addEventListener('click', function () {
+            const advancedFilters = document.getElementById('advanced-filters');
+            if (advancedFilters.style.display === 'none') {
+                advancedFilters.style.display = 'block';
+            } else {
+                advancedFilters.style.display = 'none';
+            }
+        });
+
+        // Script pour fermer le formulaire
+        document.getElementById('close-filters-btn').addEventListener('click', function () {
+            const advancedFilters = document.getElementById('advanced-filters');
+            advancedFilters.style.display = 'none';
+        });
+    </script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Récupérer tous les messages d'alerte
+            const alerts = document.querySelectorAll('.alert');
+
+            // Faire disparaître chaque alerte après 5 secondes
+            alerts.forEach(alert => {
+                setTimeout(() => {
+                    alert.classList.add('fade');
+                    alert.classList.remove('show');
+                    setTimeout(() => alert.remove(), 500); // Supprimer complètement après l'animation
+                }, 5000); // 5 secondes
+            });
+        });
+    </script>
+{% endblock %}
